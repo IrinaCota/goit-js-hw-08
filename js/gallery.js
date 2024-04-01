@@ -88,27 +88,32 @@ containerGallery.insertAdjacentHTML("beforeend", createGalleryMarkup(images));
 
 containerGallery.addEventListener("click", handleImageClick);
 
-function handleClickImg(event) {
-    event.preventDefault();
+function handleImageClick(event) {
+  event.preventDefault();
 
-    if (event.target.nodeName !== "IMG") {
-        return
+  if (event.target.nodeName !== "IMG")
+    return;
+
+  const originalImg = event.target.dataset.source;
+
+  const instance = basicLightbox.create(
+    `
+   <img src="" width="1280" >
+`,
+    {
+      onShow: (instance) => {
+        window.addEventListener('keydown', handleEscapeImg);
+      },
+      onClose: (instance) => {
+        window.removeEventListener('keydown', handleEscapeImg);
+      },
     }
+  );
+  
+  instance.show()
 
-    const originalImg = event.target.dataset.source;
-
-    const instance = basicLightbox.create(`
-   <img src="${originalImg}" width="1280" />
-`, {
-        onShow: (instance) => {document.addEventListener("keydown", handleEscapeImg)},
-        onClose: (instance) => {document.removeEventListener("keydown", handleEscapeImg)}
-})
-
-instance.show()
-
-    function handleEscapeImg(event) {
-    if (event.code === "Escape") {
-        instance.close();
-    }
-    }
+  function handleEscapeImg(event) {
+    if (event.code !== 'Escape') return;
+    instance.close();
+  }
 }
