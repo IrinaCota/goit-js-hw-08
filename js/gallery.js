@@ -64,7 +64,8 @@ const images = [
   },
 ];
 
-const containerGallery = document.querySelector(".gallery");
+const gallery = document.querySelector(".gallery");
+gallery.insertAdjacentHTML("beforeend", createGalleryMarkup(images));
 
 function createGalleryMarkup(images) {
   return images
@@ -84,21 +85,22 @@ function createGalleryMarkup(images) {
 }
 
 
-containerGallery.insertAdjacentHTML("beforeend", createGalleryMarkup(images));
-
-containerGallery.addEventListener("click", handleImageClick);
+gallery.addEventListener("click", handleImageClick);
 
 function handleImageClick(event) {
   event.preventDefault();
 
-  if (event.target.nodeName !== "IMG")
+  if (event.target.nodeName !== "IMG") {
     return;
+  }
+  const originalImg = event.target;
 
-  const originalImg = event.target.dataset.source;
+  const imgSource = originalImg.dataset.source;
+  const imgAlt = originalImg.alt;
 
   const instance = basicLightbox.create(
     `
-   <img src="" width="1280" >
+   <img src="${imgSource}" alt="${imgAlt}" width="1112" height = "640" />
 `,
     {
       onShow: (instance) => {
@@ -113,7 +115,8 @@ function handleImageClick(event) {
   instance.show()
 
   function handleEscapeImg(event) {
-    if (event.code !== 'Escape') return;
-    instance.close();
+    if (event.code === 'Escape') {
+      instance.close();
+    }
   }
 }
