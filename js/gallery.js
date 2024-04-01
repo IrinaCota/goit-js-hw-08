@@ -82,45 +82,33 @@ function createGalleryMarkup(images) {
     )
     .join("");
 }
-/*
-const instance = basicLightbox.create(
-  `<div class="imgs">
-      <img src="" alt=""/>
-    </div>`,
-  {
-    onShow() {
-      document.addEventListener("keydown", onEscape);
-    },
-    onClose() {
-      document.removeEventListener("keydown", onEscape);
-    },
-  }
-);
-*/
+
+
 containerGallery.insertAdjacentHTML("beforeend", createGalleryMarkup(images));
 
 containerGallery.addEventListener("click", handleImageClick);
-function handleImageClick(event) {
-  if (event.target === event.currentTarget) {
-    return;
-  }
+
+function handleClickImg(event) {
+    event.preventDefault();
+
+    if (event.target.nodeName !== "IMG") {
+        return
+    }
+
+    const originalImg = event.target.dataset.source;
+
+    const instance = basicLightbox.create(`
+   <img src="${originalImg}" width="1280" />
+`, {
+        onShow: (instance) => {document.addEventListener("keydown", handleEscapeImg)},
+        onClose: (instance) => {document.removeEventListener("keydown", handleEscapeImg)}
+})
+
+instance.show()
+
+    function handleEscapeImg(event) {
+    if (event.code === "Escape") {
+        instance.close();
+    }
+    }
 }
-
-const instance = basicLightbox.create(`
-    <div class="modal">
-      <img src="" alt=""/>
-    </div>
-  `);
-
-  instance.show();
-
-/*
-На що буде звертати увагу ментор при перевірці:
-
-Галерея зображень стилізована згідно з макетом
-Дані для галереї створені динамічно в JS
-Під час прослуховування події натискання на елементи галереї використаний прийом делегування
-При кліку між елементами галереї нічого не відбувається
-Підключена бібліотека basicLightbox
-При кліку по елементу галереї відкривається модальне вікно підключеної бібліотеки, в якому міститься збільшена версія зображення, по якому клікнули
-*/
