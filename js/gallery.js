@@ -103,10 +103,10 @@ function handleImageClick(event) {
    <img src="${imgSource}" alt="${imgAlt}" width="1112" height = "640" />
 `,
     {
-      onShow: (instance) => {
+      onShow: (_instance) => {
         window.addEventListener('keydown', handleEscapeImg);
       },
-      onClose: (instance) => {
+      onClose: (_instance) => {
         window.removeEventListener('keydown', handleEscapeImg);
       },
     }
